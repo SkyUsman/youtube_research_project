@@ -5,10 +5,10 @@ import random
 
 # Replace with your actual Data Center ID and API Token
 datacenter_id = 'yul1'
-api_token = 'idXPUF5FTuNeGZeYJg6k5bky6BMJLXlVeWBxqcqY'
+api_token = ''
 
 # Load the CSV file
-csv_file = 'comments.csv'  # Replace with your CSV file path
+csv_file = 'ahmed_ameer_combined_dataset.csv'  # Replace with your CSV file path
 df = pd.read_csv(csv_file)
 
 # Extract comments from the CSV file
