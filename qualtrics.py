@@ -7,10 +7,10 @@ import random
 
 # Replace with your actual Data Center ID and API Token
 datacenter_id = 'yul1'
-api_token = '############' # Use your API Token here
+api_token = '###############' # Use your API Token here
 
 # Load the CSV file
-csv_file = 'comments-updated.csv'  # Replace with your CSV file path
+csv_file = 'ahmed_ameer_combined_dataset.csv'  # Replace with your CSV file path
 df = pd.read_csv(csv_file)
 
 # Ensure the 'Yes' and 'No' columns exist
@@ -29,7 +29,7 @@ random_comments = random.sample(comments, 10)
 survey_url = f'https://{datacenter_id}.qualtrics.com/API/v3/survey-definitions'
 survey_payload = {
     'SurveyName': 'YouTube Comments Disinformation',
-    'Language': 'AR',  # Adjust if necessary
+    'Language': 'EN',  # Adjust if necessary
     'ProjectCategory': 'CORE'
 }
 survey_headers = {
