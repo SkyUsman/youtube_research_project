@@ -21,7 +21,7 @@ random_comments = random.sample(comments, 10)
 survey_url = f'https://{datacenter_id}.qualtrics.com/API/v3/survey-definitions'
 survey_payload = {
     'SurveyName': 'YouTube Comments Disinformation',
-    'Language': 'AR',  # Adjust if necessary
+    'Language': 'EN',  # Adjust if necessary
     'ProjectCategory': 'CORE'
 }
 survey_headers = {
