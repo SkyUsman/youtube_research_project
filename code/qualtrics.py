@@ -1,27 +1,26 @@
 import requests
 import json
-import pandas as pd
 import random
+from db_pull import get_comments, clean_comments  # Import the cleaning function
 
 # Replace with your actual Data Center ID and API Token
 datacenter_id = 'yul1'
 api_token = 'idXPUF5FTuNeGZeYJg6k5bky6BMJLXlVeWBxqcqY'
 
-# Load the CSV file
-csv_file = 'comments.csv'  # Replace with your CSV file path
-df = pd.read_csv(csv_file)
+# Get comments from the database
+comments = get_comments()
 
-# Extract comments from the CSV file
-comments = df['Comment'].dropna().tolist()
+# Clean comments for consistency
+cleaned_comments = clean_comments(comments)
 
 # Select 10 random comments
-random_comments = random.sample(comments, 10)
+random_comments = random.sample(cleaned_comments, 10)
 
 # Step 1: Create the Survey
 survey_url = f'https://{datacenter_id}.qualtrics.com/API/v3/survey-definitions'
 survey_payload = {
     'SurveyName': 'YouTube Comments Disinformation',
-    'Language': 'AR',  # Adjust if necessary
+    'Language': 'EN',  # Adjust if necessary
     'ProjectCategory': 'CORE'
 }
 survey_headers = {
