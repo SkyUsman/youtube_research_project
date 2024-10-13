@@ -3,9 +3,9 @@ import json
 import random
 from db_pull import get_comments, clean_comments  # Import the cleaning function
 
-# Replace with your actual Data Center ID and API Token
+# TODO: Replace with your actual Data Center ID and API Token
 datacenter_id = 'yul1'
-api_token = 'idXPUF5FTuNeGZeYJg6k5bky6BMJLXlVeWBxqcqY'
+api_token = 'xxx'
 
 # Get comments from the database
 comments = get_comments()

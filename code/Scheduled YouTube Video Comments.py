@@ -28,7 +28,7 @@ import pytz  # Ensure pytz is installed for timezone handling
 # Initialize global variables
 api_usage_counter = 0
 api_daily_limit = 10000  
-api_key = "xxxxxx"  # Place your actual API key here
+api_key = "xxxxxx"  # TODO: Place your actual API key here
 
 # Initialize the YouTube API client
 youtube = build('youtube', 'v3', developerKey=api_key)
@@ -88,7 +88,7 @@ def load_state():
 #keyword = "Russia Ukraine"
 #keyword = "Russia Ukraine war update today"
 #keyword = "Russia and Ukraine Updates"
-keyword = "Russia and Ukraine"
+keyword = "Russia and Ukraine" # TODO: change search parameters, based on liking.
 max_results = 2000
 order = "relevance"  # Can be "relevance", "date", "rating", or "title"
 

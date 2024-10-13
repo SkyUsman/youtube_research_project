@@ -3,28 +3,28 @@ from sqlalchemy import create_engine
 import re  # Regular expressions for text cleaning
 import html  # To escape HTML special characters
 
-def get_comments():
+def get_comments() -> list:
     # Define the connection string (replace with your actual connection details)
-    server = 'youtube-comments.database.windows.net'
-    database = 'youtube-comments'
-    username = 'ameerg'
-    password = 'I<3rizzraza'
-    driver = 'ODBC Driver 17 for SQL Server'
+    SERVER = 'youtube-comments.database.windows.net'
+    DATABASE = 'youtube-comments'
+    USERNAME = 'ameerg'
+    PASSWWORD = 'I<3rizzraza'
+    DRIVER = 'ODBC Driver 17 for SQL Server'
 
     # Create connection string for SQLAlchemy
-    connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
+    connection_string = f'mssql+pyodbc://{USERNAME}:{PASSWWORD}@{SERVER}/{DATABASE}?driver={DRIVER}'
 
     # Create a SQLAlchemy engine
     engine = create_engine(connection_string)
 
     # Load comments from the database
-    query = "SELECT comment FROM yt_comments"
+    query = "SELECT comment FROM yt_comments;"
     df = pd.read_sql(query, engine)
 
-    # Return the list of comments
+    # Return the list of comments, dropping the missing ones and converting to a list.
     return df['comment'].dropna().tolist()
 
-def clean_comments(comments):
+def clean_comments(comments) -> list:
     cleaned_comments = []
     for comment in comments:
         # Remove "Reply:" and any usernames or mentions
