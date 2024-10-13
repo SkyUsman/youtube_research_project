@@ -7,10 +7,10 @@ import random
 
 # Replace with your actual Data Center ID and API Token
 datacenter_id = 'yul1'
-api_token = '###############' # Use your API Token here
+api_token = '###############' # NOTE: Use your API Token here
 
 # Load the CSV file
-csv_file = 'ahmed_ameer_combined_dataset.csv'  # Replace with your CSV file path
+csv_file = 'ahmed_ameer_combined_dataset.csv'  # NOTE: Replace with your CSV file path
 df = pd.read_csv(csv_file)
 
 # Ensure the 'Yes' and 'No' columns exist

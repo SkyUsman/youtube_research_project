@@ -3,7 +3,7 @@ import csv
 from langdetect import detect, LangDetectException
 
 # Define the folder where your .txt files are stored
-folder_path = 'comment_txt_files'  # Replace this with your folder path
+folder_path = 'comment_txt_files'  # NOTE: Replace this with your folder path
 
 # Function to check if a comment is in English
 def is_english(text):
