@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 
 def send_email(recipient, survey_link):
     sender_email = 'Jrubio062003@gmail.com'  # Replace with your actual OU email address
-    sender_password = 'hkkm ulqy rbjw tbtz'     # Your Outlook password or App Password if 2FA is enabled
+    sender_password = 'x'     # Your Outlook password or App Password if 2FA is enabled
 
     subject = 'Your Survey Participation'
     body = f'Please participate in our survey: {survey_link}'
