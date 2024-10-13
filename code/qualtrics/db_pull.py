@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
-import re  # Regular expressions for text cleaning
-import html  # To escape HTML special characters
+import re
+import html
 
 def get_comments():
     # Define the connection string (replace with your actual connection details)
@@ -33,7 +33,7 @@ def clean_comments(comments):
         # Optionally remove other unnecessary characters (like punctuation, if needed)
         cleaned_comment = re.sub(r'[^\w\s.,!?]', '', cleaned_comment)
 
-        # Escape special HTML characters
+        # Escape special HTML  for qualtrics survery since it takes HTML text
         cleaned_comment = html.escape(cleaned_comment)
 
         # Add the cleaned comment to the list if it's not empty
