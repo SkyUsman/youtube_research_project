@@ -1,84 +1,72 @@
+# qualtrics.py
 import requests
-import json
-import random
-from db_pull import get_comments, clean_comments  # Import the cleaning function
 
-# TODO: Replace with your actual Data Center ID and API Token
-datacenter_id = 'yul1'
-api_token = 'xxx'
+class QualtricsAPI:
+    def __init__(self, datacenter_id, api_token):
+        self.datacenter_id = datacenter_id
+        self.api_token = api_token
 
-# Get comments from the database
-comments = get_comments()
-
-# Clean comments for consistency
-cleaned_comments = clean_comments(comments)
-
-# Select 10 random comments
-random_comments = random.sample(cleaned_comments, 10)
-
-# Step 1: Create the Survey
-survey_url = f'https://{datacenter_id}.qualtrics.com/API/v3/survey-definitions'
-survey_payload = {
-    'SurveyName': 'YouTube Comments Disinformation',
-    'Language': 'EN',  # Adjust if necessary
-    'ProjectCategory': 'CORE'
-}
-survey_headers = {
-    'X-API-TOKEN': api_token,
-    'Content-Type': 'application/json'
-}
-
-survey_response = requests.post(survey_url, headers=survey_headers, json=survey_payload)
-survey_data = survey_response.json()
-
-if survey_response.status_code == 200:
-    survey_id = survey_data['result']['SurveyID']
-    print(f"Survey Created: ID = {survey_id}")
-
-    # Step 2: Add Comments as Questions to the Survey
-    for idx, comment in enumerate(random_comments):
-        question_url = f'https://{datacenter_id}.qualtrics.com/API/v3/survey-definitions/{survey_id}/questions'
-        
-        question_payload = {
-            "QuestionText": f"Do you believe the following comment is disinformation?\n\n\"{comment}\"",
-            "DataExportTag": f"Q{idx+1}",
-            "QuestionType": "MC",
-            "Selector": "SAVR",
-            "SubSelector": "TX",
-            "Configuration": {
-                "QuestionDescriptionOption": "UseText"
-            },
-            "Choices": {
-                "1": {
-                    "Display": "Yes"
-                },
-                "2": {
-                    "Display": "No"
-                }
-            },
-            "ChoiceOrder": [
-                "1",
-                "2"
-            ],
-            "Validation": {
-                "Settings": {
-                    "ForceResponse": "ON",  # Ensure a response is required
-                    "ForceResponseType": "ON",
-                    "Type": "None"
-                }
-            },
-            "Language": [],
-            "NextChoiceId": 3,
-            "NextAnswerId": 1,
-            "QuestionID": f"QID{idx+1}",
-            "QuestionText_Unsafe": f"Do you believe the following comment is disinformation?\n\n\"{comment}\""
+    def create_survey(self):
+        survey_url = f'https://{self.datacenter_id}.qualtrics.com/API/v3/survey-definitions'
+        survey_payload = {
+            'SurveyName': 'YouTube Comments Disinformation',
+            'Language': 'EN',
+            'ProjectCategory': 'CORE'
         }
-        
-        question_response = requests.post(question_url, headers=survey_headers, json=question_payload)
-        
-        if question_response.status_code == 200:
-            print(f"Question {idx+1} added successfully.")
-        else:
-            print(f"Failed to add Question {idx+1}: {question_response.json()}")
-else:
-    print(f"Failed to create survey: {survey_data}")
+        survey_headers = {
+            'X-API-TOKEN': self.api_token,
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.post(survey_url, headers=survey_headers, json=survey_payload)
+        return response.json()
+
+    def add_questions_to_survey(self, survey_id, comments):
+        for idx, comment in enumerate(comments):
+            question_url = f'https://{self.datacenter_id}.qualtrics.com/API/v3/survey-definitions/{survey_id}/questions'
+
+            question_payload = {
+                "QuestionText": f"Do you believe the following comment is disinformation?\n\n\"{comment}\"",
+                "DataExportTag": f"Q{idx+1}",
+                "QuestionType": "MC",
+                "Selector": "SAVR",
+                "SubSelector": "TX",
+                "Configuration": {
+                    "QuestionDescriptionOption": "UseText"
+                },
+                "Choices": {
+                    "1": {"Display": "Yes"},
+                    "2": {"Display": "No"},
+                    "3": {"Display" : "Skip"}
+                },
+                "ChoiceOrder": ["1", "2", "3"],
+                "Validation": {
+                    "Settings": {
+                        "ForceResponse": "ON",
+                        "ForceResponseType": "ON",
+                        "Type": "None"
+                    }
+                },
+                "Language": [],
+                "NextChoiceId": 3,
+                "NextAnswerId": 1,
+                "QuestionID": f"QID{idx+1}",
+                "QuestionText_Unsafe": f"Do you believe the following comment is disinformation?\n\n\"{comment}\""
+            }
+
+            question_response = requests.post(question_url, headers={'X-API-TOKEN': self.api_token, 'Content-Type': 'application/json'}, json=question_payload)
+
+            if question_response.status_code == 200:
+                print(f"Question {idx+1} added successfully.")
+            else:
+                print(f"Failed to add Question {idx+1}: {question_response.json()}")
+
+    def activate_survey(self, survey_id):
+        activate_url = f'https://{self.datacenter_id}.qualtrics.com/API/v3/survey-definitions/{survey_id}/activate'
+        activate_headers = {
+            'X-API-TOKEN': self.api_token,
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.post(activate_url, headers=activate_headers)
+        return response.json()

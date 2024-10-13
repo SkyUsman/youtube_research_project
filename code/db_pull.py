@@ -8,11 +8,11 @@ def get_comments() -> list:
     SERVER = 'youtube-comments.database.windows.net'
     DATABASE = 'youtube-comments'
     USERNAME = 'ameerg'
-    PASSWWORD = 'I<3rizzraza'
+    PASSWORD = 'I<3rizzraza'
     DRIVER = 'ODBC Driver 17 for SQL Server'
 
     # Create connection string for SQLAlchemy
-    connection_string = f'mssql+pyodbc://{USERNAME}:{PASSWWORD}@{SERVER}/{DATABASE}?driver={DRIVER}'
+    connection_string = f'mssql+pyodbc://{USERNAME}:{PASSWORD}@{SERVER}/{DATABASE}?driver={DRIVER}'
 
     # Create a SQLAlchemy engine
     engine = create_engine(connection_string)
@@ -41,3 +41,6 @@ def clean_comments(comments) -> list:
             cleaned_comments.append(cleaned_comment)
     
     return cleaned_comments
+
+
+
