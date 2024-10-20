@@ -18,11 +18,12 @@ def get_random_comments():
     connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
     engine = create_engine(connection_string)
 
-    # Load 10 random comments
+   # Modify the query to select the top 10 comments
     query = "SELECT TOP 10 comment FROM yt_comments"
     df = pd.read_sql(query, engine)
     
-    print(query)
+    print("Raw comments fetched from database:")
+    print(df['comment'].dropna().tolist())  # Print the raw comments
 
     return df['comment'].dropna().tolist()
 
@@ -34,6 +35,10 @@ def clean_comments(comments):
         cleaned_comment = re.sub(r'[^\w\s.,!?]', '', cleaned_comment)
         if cleaned_comment:
             cleaned_comments.append(cleaned_comment)
+    
+    print("Cleaned comments:")  # Print cleaned comments
+    print(cleaned_comments)
+    
     return cleaned_comments
 
 # API route to get the survey questions
@@ -42,17 +47,6 @@ def getComments():
     comments = get_random_comments()
     cleaned_comments = clean_comments(comments)
     return jsonify(cleaned_comments)
-
-# # API route to get the survey questions
-# @app.route('/api/postResponses', methods=['POST'])
-# def postResponses():
-    
-
-
-# def survey_questions():
-#     comments = get_random_comments()
-#     cleaned_comments = clean_comments(comments)
-#     return jsonify(cleaned_comments)
 
 # Start the server
 if __name__ == '__main__':

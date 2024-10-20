@@ -1,15 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Question from "../components/Question";
-import getComments from "@/api/getComments";
 import postResponses from "@/api/postResponses";
 
 export default function Home() {
-  const [comments, setComments] = useState([
-    { id: 1, text: "This is the first comment. Is this disinformation?" },
-    { id: 2, text: "This is the second comment. Is this disinformation?" },
-    { id: 3, text: "This is the third comment. Is this disinformation?" },
-  ]);
+  const [comments, setComments] = useState([]);
   const [responses, setResponses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,11 +13,16 @@ export default function Home() {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const comments = await getComments(); // Call the getComments function
-        setComments(comments);
+        const response = await fetch("http://127.0.0.1:5000/api/getComments"); // Fetch comments from the API
+        if (!response.ok) {
+          throw new Error("Failed to load comments");
+        }
+        const data = await response.json(); // Extract JSON data
+        setComments(data); // Set comments state
         setLoading(false);
       } catch (err) {
         setError(err.message || "Failed to load comments");
+        console.error(err);
         setLoading(false);
       }
     };
@@ -43,7 +43,7 @@ export default function Home() {
 
     // Send responses to backend
     try {
-      await postResponses(responses); // Call the submitResponses function
+      await postResponses(responses); // Call the postResponses function
       alert("Survey submitted successfully");
     } catch (error) {
       alert("Error submitting survey: " + error.message);
@@ -51,16 +51,16 @@ export default function Home() {
   };
 
   if (loading) return <p>Loading...</p>;
-  // if (error) return <p>{error}</p>;
+  if (error) return <p>{error}</p>; // Display error if there is one
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-4xl text-center mb-8">Survey</h1>
+      <h1 className="text-4xl text-center mb-8">Disinformation Survey</h1>
       <form onSubmit={handleSubmit}>
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <Question
-            key={comment.id}
-            question={comment}
+            key={index} // Use index as key, but consider using a unique ID if available
+            question={{ text: comment }} // Pass comment text as the question prop
             onChange={handleResponseChange}
           />
         ))}
