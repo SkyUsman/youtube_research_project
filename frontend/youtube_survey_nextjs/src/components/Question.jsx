@@ -1,45 +1,19 @@
 import React from "react";
 
 const Question = ({ question, onChange }) => {
-  // const handleChange = (e) => {
-  //   onChange(question.id, e.target.value);
-  // };
+  const handleChange = (event) => {
+    onChange(question.id, event.target.value);
+  };
 
   return (
-    <div className="mb-6">
-      <h2 className="text-xl font-bold mb-4">{question.text}</h2>
-      <div className="flex space-x-4">
-        <label>
-          <input
-            type="radio"
-            name={`question-${question.id}`}
-            value="yes"
-            // onChange={handleChange}
-            className="mr-2"
-          />
-          Yes
-        </label>
-        <label>
-          <input
-            type="radio"
-            name={`question-${question.id}`}
-            value="no"
-            // onChange={handleChange}
-            className="mr-2"
-          />
-          No
-        </label>
-        <label>
-          <input
-            type="radio"
-            name={`question-${question.id}`}
-            value="skip"
-            // onChange={handleChange}
-            className="mr-2"
-          />
-          Skip
-        </label>
-      </div>
+    <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+      <h2 className="text-lg font-semibold mb-2">{question.text}</h2>
+      <input
+        type="text"
+        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Your response..."
+        onChange={handleChange}
+      />
     </div>
   );
 };

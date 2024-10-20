@@ -1,7 +1,7 @@
 export default async function postResponses(req, res) {
   if (req.method === "POST") {
     try {
-      const response = await fetch("/api/postResponses", {
+      const response = await fetch("http://127.0.0.1:5000/api/postResponses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

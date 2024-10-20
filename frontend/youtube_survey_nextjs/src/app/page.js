@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Question from "../components/Question";
+import getComments from "@/api/getComments";
+import postResponses from "@/api/postResponses";
 
 export default function Home() {
   const [comments, setComments] = useState([
@@ -13,26 +15,20 @@ export default function Home() {
   const [error, setError] = useState("");
 
   // Fetch survey data from the API
-  // useEffect(() => {
-  //   // Fetch comments from your API
-  //   const fetchComments = async () => {
-  //     try {
-  //       const res = await fetch("/api/getComments");
-  //       const data = await res.json();
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const comments = await getComments(); // Call the getComments function
+        setComments(comments);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || "Failed to load comments");
+        setLoading(false);
+      }
+    };
 
-  //       if (res.ok) {
-  //         setComments(data);
-  //         setLoading(false);
-  //       } else {
-  //         setError(data.message);
-  //       }
-  //     } catch (err) {
-  //       setError("Failed to load comments");
-  //     }
-  //   };
-
-  //   fetchComments();
-  // }, []);
+    fetchComments();
+  }, []);
 
   // Handle answer change
   const handleResponseChange = (id, value) => {
@@ -43,39 +39,19 @@ export default function Home() {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // // Send responses to backend
-    // try {
-    //   const res = await fetch("/api/submitResponses", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(responses),
-    //   });
-
-    //   if (res.ok) {
-    //     alert("Survey submitted successfully");
-    //   } else {
-    //     alert("Failed to submit survey");
-    //   }
-    // } catch (error) {
-    //   alert("Error submitting survey");
-    // }
-    return "Helo";
+    // Send responses to backend
+    try {
+      await postResponses(responses); // Call the submitResponses function
+      alert("Survey submitted successfully");
+    } catch (error) {
+      alert("Error submitting survey: " + error.message);
+    }
   };
 
-  // if (submitted) {
-  //   return (
-  //     <h1 className="text-center text-2xl mt-8">
-  //       Thank you for submitting your responses!
-  //     </h1>
-  //   );
-  // }
-
-  // if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p>Loading...</p>;
+  // if (error) return <p>{error}</p>;
 
   return (
     <div className="container mx-auto p-8">
