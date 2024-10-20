@@ -1,13 +1,16 @@
 export default async function postResponses(req, res) {
   if (req.method === "POST") {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/postResponses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(req.body),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:5000/api/updateResponses",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(req.body),
+        }
+      );
 
       if (response.ok) {
         res.status(200).json({ message: "Success" });
