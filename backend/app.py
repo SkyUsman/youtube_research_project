@@ -2,8 +2,10 @@ from flask import Flask, jsonify
 import pandas as pd
 from sqlalchemy import create_engine
 import re
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000"])  # Allow only this origin
 
 # Function to fetch 10 random comments from the database
 def get_random_comments():
@@ -17,8 +19,10 @@ def get_random_comments():
     engine = create_engine(connection_string)
 
     # Load 10 random comments
-    query = "SELECT TOP 10 comment FROM yt_comments ORDER BY NEWID()"
+    query = "SELECT TOP 10 comment FROM yt_comments"
     df = pd.read_sql(query, engine)
+    
+    print(query)
 
     return df['comment'].dropna().tolist()
 
