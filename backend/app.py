@@ -33,11 +33,22 @@ def clean_comments(comments):
     return cleaned_comments
 
 # API route to get the survey questions
-@app.route('/api/survey-questions', methods=['GET'])
-def survey_questions():
+@app.route('/api/getComments', methods=['GET'])
+def getComments():
     comments = get_random_comments()
     cleaned_comments = clean_comments(comments)
     return jsonify(cleaned_comments)
+
+# # API route to get the survey questions
+# @app.route('/api/postResponses', methods=['POST'])
+# def postResponses():
+    
+
+
+# def survey_questions():
+#     comments = get_random_comments()
+#     cleaned_comments = clean_comments(comments)
+#     return jsonify(cleaned_comments)
 
 # Start the server
 if __name__ == '__main__':
