@@ -18,9 +18,9 @@ def get_random_comments():
     connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
     engine = create_engine(connection_string)
 
-   # Modify the query to select the top 10 comments
-    query = "SELECT TOP 10 comment FROM yt_comments"
+    query = "SELECT TOP 10 comment FROM yt_comments ORDER BY NEWID();"
     df = pd.read_sql(query, engine)
+
     
     print("Raw comments fetched from database:")
     print(df['comment'].dropna().tolist())  # Print the raw comments

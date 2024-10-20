@@ -8,25 +8,24 @@ export default function Home() {
   const [responses, setResponses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const fetchComments = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/getComments"); // Fetch comments from the API
+      if (!response.ok) {
+        throw new Error("Failed to load comments");
+      }
+      const data = await response.json(); // Extract JSON data
+      setComments(data); // Set comments state
+      setLoading(false);
+    } catch (err) {
+      setError(err.message || "Failed to load comments");
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
   // Fetch survey data from the API
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/api/getComments"); // Fetch comments from the API
-        if (!response.ok) {
-          throw new Error("Failed to load comments");
-        }
-        const data = await response.json(); // Extract JSON data
-        setComments(data); // Set comments state
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || "Failed to load comments");
-        console.error(err);
-        setLoading(false);
-      }
-    };
-
     fetchComments();
   }, []);
 
