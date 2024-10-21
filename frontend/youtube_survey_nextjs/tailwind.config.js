@@ -10,6 +10,8 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        crimson: "#841617", // OU Crimson
+        cream: "#FDF9F6", // OU Cream
       },
     },
   },
