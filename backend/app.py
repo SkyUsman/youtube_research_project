@@ -20,22 +20,24 @@ engine = create_engine(connection_string)
 
 # Function to fetch 10 random comments from the database
 def get_random_comments():
-    query = "SELECT TOP 10 comment FROM yt_comments ORDER BY NEWID();"
+    query = "SELECT TOP 10 comment_id, comment FROM yt_comments ORDER BY NEWID();"
     df = pd.read_sql(query, engine)
 
     print("Raw comments fetched from database:")
-    print(df['comment'].dropna().tolist())  # Print the raw comments
+    print(df[['comment_id', 'comment']].dropna().to_dict(orient="records"))  # Print the raw comments with ids
 
-    return df['comment'].dropna().tolist()
+    return df[['comment_id', 'comment']].dropna().to_dict(orient='records')
 
 # Function to clean the comments for HTML
 def clean_comments(comments):
     cleaned_comments = []
-    for comment in comments:
+    for comment_data in comments:
+        comment = comment_data['comment']
         cleaned_comment = re.sub(r'Reply:\s*|\@\w+', '', comment).strip()
         cleaned_comment = re.sub(r'[^\w\s.,!?]', '', cleaned_comment)
         if cleaned_comment:
-            cleaned_comments.append(cleaned_comment)
+            comment_data['comment'] = cleaned_comment
+            cleaned_comments.append(comment_data)
     
     print("Cleaned comments:")  # Print cleaned comments
     print(cleaned_comments)
@@ -55,29 +57,38 @@ def post_responses():
     data = request.get_json()  # Get the JSON data from the request
     print("Received data:", data)  # Print the received data for debugging
 
-    # Extract counts from the request data, providing defaults if necessary
-    yes_count = data.get('yes_count', 0)
-    no_count = data.get('no_count', 0)
-    skip_count = data.get('skip_count', 0)
+    # Extract responses from the request data
+    responses = data.get('responses', [])
 
-    # Define the SQL query using SQLAlchemy's text() function
-    update_query = text("""
-        UPDATE yt_comments
-        SET yes_count = yes_count + :yes_count,
-            no_count = no_count + :no_count,
-            skip_count = skip_count + :skip_count
-    """)
-
-    # Connect to the database and execute the query
+    # Iterate through each response and update the corresponding comment in the database
     try:
-        with engine.connect() as conn:  # Assuming 'engine' is defined globally
-            conn.execute(update_query, {"yes_count": yes_count, "no_count": no_count, "skip_count": skip_count})
-        
-        return jsonify({"message": "Response recorded", "data": data}), 200
+        with engine.connect() as conn:
+            with conn.begin():  # Start a transaction block
+                for response in responses:
+                    update_query = text("""
+                        UPDATE yt_comments
+                        SET yes_count = yes_count + :yes_count,
+                            no_count = no_count + :no_count,
+                            skip_count = skip_count + :skip_count
+                        WHERE comment_id = :comment_id
+                    """)
+
+                    result = conn.execute(update_query, {
+                        "yes_count": response.get('yes_count', 0),
+                        "no_count": response.get('no_count', 0),
+                        "skip_count": response.get('skip_count', 0),
+                        "comment_id": response.get('comment_id')
+                    })
+
+                    if result.rowcount == 0:
+                        print(f"No rows updated for comment_id: {response.get('comment_id')}")
+                    else:
+                        print(f"Updated {result.rowcount} rows for comment_id: {response.get('comment_id')}")
+
+        return jsonify({"message": "Responses recorded", "data": data}), 200
     except Exception as e:
         print("Error executing update query:", str(e))
-        return jsonify({"message": "Error recording response", "error": str(e)}), 500
+        return jsonify({"message": "Error recording responses", "error": str(e)}), 500
 
-# Start the server
 if __name__ == '__main__':
     app.run(debug=True)
