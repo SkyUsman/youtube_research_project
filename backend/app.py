@@ -5,7 +5,7 @@ import re
 from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])  # Allow only this origin
+CORS(app, origins=["https://youtube-research-project.vercel.app/", "http://localhost:3000"])  # Allow only this origin
 
 # Database connection parameters
 server = 'youtube-comments.database.windows.net'

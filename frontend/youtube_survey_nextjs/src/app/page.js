@@ -27,7 +27,9 @@ export default function Home() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/getComments");
+      const response = await fetch(
+        "https://youtube-research-project.onrender.com/api/getComments"
+      );
       if (!response.ok) {
         throw new Error("Failed to load comments");
       }
@@ -75,7 +77,7 @@ export default function Home() {
 
     try {
       const postResponse = await fetch(
-        "http://127.0.0.1:5000/api/postResponses",
+        "https://youtube-research-project.onrender.com/api/postResponses",
         {
           method: "POST",
           headers: {
