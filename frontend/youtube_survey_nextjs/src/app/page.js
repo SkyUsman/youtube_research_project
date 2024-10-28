@@ -10,23 +10,29 @@ import {
   FormControl,
   Card,
   CardContent,
-} from "@mui/material"; // Import MUI components
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 export default function Home() {
   const [comments, setComments] = useState([]);
   const [responses, setResponses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [submitted, setSubmitted] = useState(false); // New state for submission status
+  const [submitted, setSubmitted] = useState(false);
+  const [errorModal, setErrorModal] = useState(false); // State for error modal
 
   const fetchComments = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/getComments"); // Fetch comments from the API
+      const response = await fetch("http://127.0.0.1:5000/api/getComments");
       if (!response.ok) {
         throw new Error("Failed to load comments");
       }
-      const data = await response.json(); // Extract JSON data
-      setComments(data); // Set comments state
+      const data = await response.json();
+      setComments(data);
       setLoading(false);
     } catch (err) {
       setError(err.message || "Failed to load comments");
@@ -35,12 +41,10 @@ export default function Home() {
     }
   };
 
-  // Fetch survey data from the API
   useEffect(() => {
     fetchComments();
   }, []);
 
-  // Handle answer change
   const handleResponseChange = (id, value) => {
     setResponses((prev) => ({
       ...prev,
@@ -51,7 +55,15 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the response data to include comment_id and the respective answer
+    const unansweredQuestions = comments.some(
+      (comment) => !responses[comment.comment_id]
+    );
+
+    if (unansweredQuestions) {
+      setErrorModal(true);
+      return;
+    }
+
     const responsePayload = {
       responses: comments.map((comment) => ({
         comment_id: comment.comment_id,
@@ -61,7 +73,6 @@ export default function Home() {
       })),
     };
 
-    // Send responses to backend via fetch
     try {
       const postResponse = await fetch(
         "http://127.0.0.1:5000/api/postResponses",
@@ -70,7 +81,7 @@ export default function Home() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(responsePayload), // Convert the payload to JSON
+          body: JSON.stringify(responsePayload),
         }
       );
 
@@ -78,41 +89,45 @@ export default function Home() {
         throw new Error("Error submitting survey");
       }
 
-      setSubmitted(true); // Update the submitted state
-      setResponses({}); // Reset responses after submission
+      setSubmitted(true);
+      setResponses({});
     } catch (error) {
       alert("Error submitting survey: " + error.message);
     }
   };
 
   const handleNewSurvey = () => {
-    setSubmitted(false); // Reset submission status to show the survey again
-    setResponses({}); // Clear responses
-    fetchComments(); // Optionally, re-fetch comments if needed
+    setSubmitted(false);
+    setResponses({});
+    fetchComments();
+  };
+
+  const closeErrorModal = () => {
+    setErrorModal(false);
   };
 
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <CircularProgress color="primary" /> {/* Material UI loading spinner */}
+        <CircularProgress color="primary" />
       </div>
     );
 
-  if (error) return <p>{error}</p>; // Display error if there is one
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="mx-auto p-8 bg-cream min-h-screen">
-      {/* OU Cream background */}
       <h1 className="text-5xl text-center mb-12 text-crimson font-bold">
-        University of Oklahoma Disinformation Survey
+        Exploring Disinformation: A University of Oklahoma Study
       </h1>
       <Typography variant="body1" className="text-center mb-6">
-        Please help us improve our understanding of disinformation by completing
-        the survey below.
+        Join us in understanding how disinformation spreads and affects online
+        platforms. Your insights will contribute to research aimed at
+        identifying and addressing misleading information on YouTube. Please
+        take a few moments to complete the survey below.
       </Typography>
 
       {submitted ? (
-        // Render the thank you card after submission
         <Card variant="outlined" className="mx-auto w-1/2 p-4">
           <CardContent>
             <Typography variant="h5" className="text-center mb-2">
@@ -169,7 +184,7 @@ export default function Home() {
                   <FormControlLabel
                     value="maybe"
                     control={<Radio color="primary" />}
-                    label="Maybe"
+                    label="Skip"
                   />
                 </RadioGroup>
               </FormControl>
@@ -188,6 +203,20 @@ export default function Home() {
           </div>
         </form>
       )}
+
+      <Dialog open={errorModal} onClose={closeErrorModal}>
+        <DialogTitle>{"Incomplete Survey"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please answer all questions before submitting the survey.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeErrorModal} color="primary">
+            Okay
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
