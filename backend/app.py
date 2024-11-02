@@ -44,6 +44,21 @@ def clean_comments(comments):
     
     return cleaned_comments
 
+@app.route('/api/test_db', methods=['GET'])
+def test_db():
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            return jsonify({"message": "Database connection successful"}), 200
+    except Exception as e:
+        print("Database connection error:", str(e))
+        return jsonify({"message": "Database connection failed", "error": str(e)}), 500
+
+# Route for the root URL
+@app.route('/')
+def index():
+    return "<h1>Welcome to the YouTube Comments API</h1><p>Use /api/getComments to fetch comments.</p>"
+
 # API route to get the survey questions
 @app.route('/api/getComments', methods=['GET'])
 def getComments():
@@ -91,4 +106,5 @@ def post_responses():
         return jsonify({"message": "Error recording responses", "error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
+
