@@ -77,7 +77,7 @@ export default function Home() {
 
     try {
       const postResponse = await fetch(
-        "https://ytresearchflask.online//api/postResponses",
+        "https://ytresearchflask.online/api/postResponses",
         {
           method: "POST",
           headers: {
