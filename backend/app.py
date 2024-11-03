@@ -44,6 +44,7 @@ def clean_comments(comments):
     
     return cleaned_comments
 
+# Route to test db connection
 @app.route('/api/test_db', methods=['GET'])
 def test_db():
     try:
