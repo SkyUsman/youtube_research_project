@@ -27,7 +27,9 @@ export default function Home() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch("http://3.17.149.255/api/getComments");
+      const response = await fetch(
+        "https://ytresearchflask.online/api/getComments"
+      );
       if (!response.ok) {
         throw new Error("Failed to load comments");
       }
@@ -75,7 +77,7 @@ export default function Home() {
 
     try {
       const postResponse = await fetch(
-        "http://3.17.149.255/api/postResponses",
+        "https://ytresearchflask.online//api/postResponses",
         {
           method: "POST",
           headers: {
