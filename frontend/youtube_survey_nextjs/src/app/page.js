@@ -31,13 +31,13 @@ export default function Home() {
         "https://ytresearchflask.online/api/getComments"
       );
       if (!response.ok) {
-        throw new Error("Failed to load comments");
+        throw new Error("Failed to load comments and generate survey. Please refresh the page!");
       }
       const data = await response.json();
       setComments(data);
       setLoading(false);
     } catch (err) {
-      setError(err.message || "Failed to load comments");
+      setError(err.message || "Failed to load comments and generate survey. Please refresh the page!");
       console.error(err);
       setLoading(false);
     }
