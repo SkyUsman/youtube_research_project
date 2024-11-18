@@ -18,7 +18,7 @@ def get_comments() -> list:
     engine = create_engine(connection_string)
 
     # Load comments from the database
-    query = "SELECT comment FROM yt_comments;"
+    query = "SELECT comment FROM yt_comments WHERE skip_count = 0;"
     df = pd.read_sql(query, engine)
 
     # Return the list of comments, dropping the missing ones and converting to a list.
