@@ -31,13 +31,18 @@ export default function Home() {
         "https://ytresearchflask.online/api/getComments"
       );
       if (!response.ok) {
-        throw new Error("Failed to load comments and generate survey. Please refresh the page!");
+        throw new Error(
+          "Failed to load comments and generate survey. Please refresh the page!"
+        );
       }
       const data = await response.json();
       setComments(data);
       setLoading(false);
     } catch (err) {
-      setError(err.message || "Failed to load comments and generate survey. Please refresh the page!");
+      setError(
+        err.message ||
+          "Failed to load comments and generate survey. Please refresh the page!"
+      );
       console.error(err);
       setLoading(false);
     }
@@ -57,14 +62,14 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const unansweredQuestions = comments.some(
-      (comment) => !responses[comment.comment_id]
-    );
+    // const unansweredQuestions = comments.some(
+    //   (comment) => !responses[comment.comment_id]
+    // );
 
-    if (unansweredQuestions) {
-      setErrorModal(true);
-      return;
-    }
+    // if (unansweredQuestions) {
+    //   setErrorModal(true);
+    //   return;
+    // }
 
     const responsePayload = {
       responses: comments.map((comment) => ({
@@ -206,7 +211,7 @@ export default function Home() {
         </form>
       )}
 
-      <Dialog open={errorModal} onClose={closeErrorModal}>
+      {/* <Dialog open={errorModal} onClose={closeErrorModal}>
         <DialogTitle>{"Incomplete Survey"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -218,7 +223,7 @@ export default function Home() {
             Okay
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }
