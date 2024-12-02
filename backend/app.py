@@ -20,7 +20,7 @@ engine = create_engine(connection_string)
 
 # Function to fetch 10 random comments from the database
 def get_random_comments():
-    query = "SELECT TOP 10 comment_id, comment FROM yt_comments ORDER BY NEWID();"
+    query = "SELECT TOP 10 comment_id, comment FROM yt_comments WHERE LEN(comment) >= 15 ORDER BY NEWID();"
     df = pd.read_sql(query, engine)
 
     print("Raw comments fetched from database:")
