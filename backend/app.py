@@ -3,6 +3,7 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 import re
 from flask_cors import CORS  # Import CORS
+from urllib.parse import quote_plus
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins (for debugging)
@@ -12,10 +13,11 @@ server = 'youtube-comments.database.windows.net'
 database = 'youtube-comments'
 username = 'ameerg'
 password = 'I<3rizzraza'
-driver = 'ODBC Driver 17 for SQL Server'
+driver = 'ODBC Driver 18 for SQL Server'
 
 # Create the SQLAlchemy engine
-connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
+params = quote_plus(f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+connection_string = f'mssql+pyodbc:///?odbc_connect={params}'
 engine = create_engine(connection_string)
 
 # Function to fetch 10 random comments from the database
