@@ -14,7 +14,7 @@ import asyncio
 import aiohttp
 
 # API Key for the Gemini LLM.
-GEMENI_API_KEY = "AIzaSyBjACXv5Nsw7uvS7wFNDe5uSc9N3ACVvAI"
+GEMENI_API_KEY = "xx"
 
 class FilterComments:
     '''Entire pipeline, reading in comments, classifying them, and updating the database.'''
@@ -70,6 +70,7 @@ class FilterComments:
         
         # Call the LLM on the commebnts.
         classifications = await self.classifier.classify_comments(batch_comments)
+        print(len(classifications))
 
         # Write the results for the validated comments to the csv files.
         for i, is_valid in enumerate(classifications):
@@ -83,11 +84,10 @@ class ClassifyComments:
     '''
     Handle the LLM-classification of the comments.
     '''
-    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash"):
+    def __init__(self, api_key: str, model_name: str = "gemini-1.5-flash"):
         self.api_key = api_key
-        self.model_name = None
+        self.model_name = model_name
         self.session = None
-        self._init_llm()
         self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={api_key}"
 
         self.inital_prompt = """You are a content classifier. Your task is to determine whether a comment contains meaningful information or makes a claim that could be controversial. 
@@ -115,7 +115,7 @@ class ClassifyComments:
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel(model_name=self.model_name)
 
-    def classify_comments(self, batch_comments: List[str]) -> List[bool] | None:
+    async def classify_comments(self, batch_comments: List[str]) -> List[bool] | None:
         '''Uses the model to classify a batch of comments.'''
 
         # Generate the client.
@@ -123,41 +123,44 @@ class ClassifyComments:
             self.session = aiohttp.ClientSession()
 
         try:
+            print('here 2')
             # Append batch comments
             batch_prompt = [f"Comment {i + 1}: {comment}" for i, comment in enumerate(batch_comments)]
             full_prompt = self.inital_prompt + '\n'.join(batch_prompt)
 
-            # # Prepare the payload.
-            # payload = {
-            #     "contents": [{
-            #         "parts": [{"text": full_prompt}]
-            #     }]
-            # }
+            # Prepare the payload.
+            payload = {
+                "contents": [{
+                    "parts": [{"text": full_prompt}]
+                }]
+            }
 
-            # # Make the API call to the Gemini LLM (doing this to avoid too many calls).
-            # async with self.session.post(
-            #     self.base_url,
-            #     headers={"Content-Type": "application/json"},
-            #     json=payload
-            # ) as response:
-            #     if response.status == 200:
-            #         # Await the data.
-            #         data = await response.json()
+            # Make the API call to the Gemini LLM (doing this to avoid too many calls).
+            async with self.session.post(
+                self.base_url,
+                headers={"Content-Type": "application/json"},
+                json=payload
+            ) as response:
+                if response.status == 200:
+                    # Await the data.
+                    data = await response.json()
 
-            #         # Extract the text response.
-            #         response_text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-            #         # Parse the response to extract "Yes" or "No" answers.
-            #         results = response_text.strip().split("\n")
-            #         return [result.strip().lower() == 'yes' for result in results]
+                    # Extract the text response.
+                    response_text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
 
-
-            # Get response from the LLM
-            response = self.model.generate_content(full_prompt)
-            results = response.text.strip().split("\n")
-
-            return [result.strip().lower() == 'yes' for result in results]
+                    # Grab the results
+                    results = response_text.strip().split("\n")
+                    return [result.strip().lower() == 'yes' for result in results]
+                else:
+                    print(f"API request failed: {response.status}")
+                    print(f"{response.text}")
         except Exception as e:
             print(f"Error in LLM classification: {e}")
+    
+    async def close(self):
+        '''Close up the session.'''
+        if self.session:
+            await self.session.close()
 
 class ProcessComments:
     '''
@@ -259,7 +262,7 @@ async def main():
     output_csv = "comments-updated-2_23_25.csv"
 
     # Build the pipeline and await for it to be done.
-    pipeline = FilterComments(folder_path, api_key, output_csv, batch_size=50)
+    pipeline = FilterComments(folder_path, api_key, output_csv, batch_size=20)
     await pipeline.run()
 
     # Close the classifier session.
