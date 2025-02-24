@@ -127,7 +127,7 @@ export default function Home() {
       <h1 className="text-5xl text-center mb-12 text-crimson font-bold">
         Exploring Disinformation: A University of Oklahoma Study
       </h1>
-      <Typography variant="body1" className="text-center mb-6">
+      <Typography variant="body1" className="text-center mb-6 text-black">
         Join us in understanding how disinformation spreads and affects online
         platforms. Your insights will contribute to research aimed at
         identifying and addressing misleading information on YouTube. Please
@@ -182,16 +182,19 @@ export default function Home() {
                     value="yes"
                     control={<Radio color="primary" />}
                     label="Yes"
+                    color="black"
                   />
                   <FormControlLabel
                     value="no"
                     control={<Radio color="primary" />}
                     label="No"
+                    color="black"
                   />
                   <FormControlLabel
                     value="maybe"
                     control={<Radio color="primary" />}
                     label="Skip"
+                    color="black"
                   />
                 </RadioGroup>
               </FormControl>
