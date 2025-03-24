@@ -1,17 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        crimson: "#841617", // OU Crimson
-        cream: "#FDF9F6", // OU Cream
+        white: "#FFF",
+        black: "#000",
+        gray: "#aaa",
+        tertiary: "#4E0002",
+      },
+      backgroundImage: {
+        "ou-background": "url(image.png)",
       },
     },
   },
