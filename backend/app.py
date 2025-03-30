@@ -6,4 +6,4 @@ app = create_app()
 
 # Entry point to running the app.
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run()
