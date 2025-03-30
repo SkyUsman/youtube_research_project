@@ -84,10 +84,10 @@ def upload_all_csvs_in_folder(folder_path: str, table_name: str):
 
 if __name__ == '__main__':
   # Path to the CSV.
-  folder_path = 'C:/youtube_research_project/comments'
+  folder_path = 'C:/youtube_research_project/filtered_comments'
 
   # Specific table to insert.
-  table_name = 'all_comments'
+  table_name = 'filtered_comments'
 
   # Run the function to process the folder.
   upload_all_csvs_in_folder(folder_path, table_name)

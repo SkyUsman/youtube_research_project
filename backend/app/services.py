@@ -40,7 +40,7 @@ def get_filtered_comments():
 def get_random_filtered_comments():
   try:
     # Query the database.
-    comments = FilteredComments.query.order_by(db.func.random()).limit(10).all()
+    comments = FilteredComments.query.order_by(db.func.newid()).limit(10).all()
     
     # Ensure comments are populated, else 404.
     if not comments:
