@@ -1,7 +1,8 @@
 import { CommentResponse, SurveyResponse } from "@/types/types";
 
 // Load in the API URL.
-const apiURL = process.env.NEXT_PUBLIC_API_URL;
+// const apiURL = process.env.NEXT_PUBLIC_API_URL;
+const apiURL = "http://127.0.0.1:5000";
 
 /**
  * Fetch the 10 random comments.

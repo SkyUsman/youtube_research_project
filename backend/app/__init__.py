@@ -28,9 +28,6 @@ def create_app():
   # Register the controllers (blueprints).
   app.register_blueprint(blueprint)
 
-  with app.app_context():
-    db.create_all()
-
   # Global error handler.
   @app.errorhandler(Exception)
   def handle_exception(e):
