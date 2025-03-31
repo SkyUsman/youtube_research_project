@@ -8,37 +8,34 @@ const Initial = ({
 }: {
   setStatus: React.Dispatch<React.SetStateAction<Status>>;
 }) => {
-  // Grab the status of the survey.
-  // const { setStatus } = useStatus();
-
   return (
     <>
-      <div className="flex items-center justify-center p-3 w-full">
-        <span className="text-base text-black opacity-50 font-normal">
+      <div className="flex items-center justify-center p-3 w-full sm:p-4 md:p-5 lg:p-6">
+        <span className="text-sm sm:text-base md:text-lg text-black opacity-50 font-normal text-center">
           YouTube Misinformation: Research at the University of Oklahoma
         </span>
       </div>
-      <div className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-5 sm:gap-6 md:gap-8 w-full">
         <div>
-          <span className="text-xl text-black font-medium">
+          <span className="text-lg sm:text-xl md:text-2xl text-black font-medium">
             Hey, please join us in understanding how disinformation spreads and
             affects online platforms!
           </span>
         </div>
         <div>
-          <span className="text-lg text-black font-normal">
-            Your insights are valued tremendously as we aim to pin point a main
+          <span className="text-base sm:text-lg md:text-xl text-black font-normal">
+            Your insights are valued tremendously as we aim to pinpoint a main
             source of truth.
           </span>
         </div>
         <div>
-          <span className="text-lg text-black font-normal">
-            All submissions are entirely anonymous. Source code is avaliable as
+          <span className="text-base sm:text-lg md:text-xl text-black font-normal">
+            All submissions are entirely anonymous. Source code is available as
             proof, if requested.
           </span>
         </div>
         <div>
-          <span className="text-lg text-black font-normal">
+          <span className="text-base sm:text-lg md:text-xl text-black font-normal">
             Structure: you will be provided 10 comments, of which you will
             classify as ‘yes’, ‘no’, or ‘skip’. That is all!
           </span>
@@ -46,10 +43,12 @@ const Initial = ({
       </div>
       <div className="flex flex-row justify-end items-center w-full">
         <button
-          className="bg-black px-4 py-2 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300"
+          className="bg-black px-4 py-2 sm:px-5 sm:py-3 md:px-6 md:py-4 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300"
           onClick={() => setStatus("started")}
         >
-          <span className="text-sm text-inherit">Next</span>
+          <span className="text-xs sm:text-sm md:text-base text-inherit">
+            Next
+          </span>
         </button>
       </div>
     </>
