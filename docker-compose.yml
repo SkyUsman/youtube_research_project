@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: flask_backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: nextjs_frontend
+    env_file:
+      - ./frontend/.env # Configs and creds.
+    ports:
+      - "3000:80" # Map host port (3000) to container port (80) nginx.
+    depends_on:
+      - backend
+    restart: unless-stopped # Restart the container if it stops.
+
+volumes:
+  postgres_data:
