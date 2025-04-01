@@ -10,23 +10,21 @@ const RadioButton: React.FC<RadioOptionProps> = ({ value, label }) => {
   return (
     <div
       className={`flex flex-row items-center p-3 rounded-md border cursor-pointer group border-gray-300 
-                  sm:p-4 md:p-5 lg:p-6`}
+                  sm:p-4`}
       onClick={() => setSelectedOption(value)}
     >
       <div
-        className={`w-5 h-5 rounded-full border mr-3 flex items-center justify-center sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 
-              ${
-                selectedOption !== value && "group-hover:border-black"}`
-              }
+        className={`w-5 h-5 rounded-full border mr-3 flex items-center justify-center 
+              ${selectedOption !== value && "group-hover:border-black"}`}
       >
         <div
-          className={`w-3 h-3 rounded-full sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 
+          className={`w-3 h-3 rounded-full
               ${
                 selectedOption === value ? "bg-black" : "bg-transparent"
               } transition-all ease-in-out duration-200`}
         />
       </div>
-      <span className="text-base sm:text-lg md:text-xl lg:text-2xl">{label}</span>
+      <span className="sm:text-base text-sm">{label}</span>
     </div>
   );
 };

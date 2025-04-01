@@ -8,7 +8,6 @@ import {
   SurveyResponse,
 } from "@/types/types";
 import { fetchComments, submitSurvey } from "@/services/api";
-// import useStatus from "@/hooks/useStatus";
 import Loader from "@/components/Loader";
 import RadioProvider from "@/contexts/RadioContext";
 
@@ -31,9 +30,6 @@ const Question = ({
   const [data, setData] = React.useState<CommentResponse[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isError, setIsError] = React.useState<boolean>(false);
-
-  // Store the status and selected option.
-  // const { setStatus } = useStatus();
 
   const loadComments = async () => {
     try {
@@ -149,20 +145,20 @@ const Question = ({
     );
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 md:px-8">
-      <div className="flex items-center justify-center py-4">
-        <span className="text-sm sm:text-base md:text-lg text-black opacity-50 font-normal">
+    <>
+      <div className="flex items-center justify-center p-3 w-full">
+        <span className="text-base text-black opacity-50 font-normal">
           {`${index + 1} / ${data.length}`}
         </span>
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5 w-full">
         <div>
-          <span className="text-lg sm:text-xl md:text-2xl text-black font-medium">
-            Do you think the comment below could be classified as misinformation?
+          <span className="sm:text-xl text-lg text-black font-medium">
+            Do you think the comment below could be classifed as misinformation?
           </span>
         </div>
         <div className="bg-gray-100 p-4 rounded-md">
-          <span className="text-base sm:text-lg md:text-xl text-black font-normal">
+          <span className="sm:text-lg text-base text-black font-normal">
             <span className="text-black font-medium">Comment: </span>
             {`"${question}"`}
           </span>
@@ -171,26 +167,24 @@ const Question = ({
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:gap-5 gap-3">
             <RadioButton value="yes" label="Yes" />
             <RadioButton value="no" label="No" />
             <RadioButton value="skip" label="Skip" />
           </div>
         </RadioProvider>
       </div>
-      <div className="flex flex-row justify-between items-center w-full py-4">
+      <div className="flex flex-row justify-between items-center w-full p-3">
         {index > 0 && (
           <button
-            className="bg-black px-5 py-3 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300"
+            className="bg-black px-4 py-2 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300"
             onClick={handlePreviousQuestion}
           >
-            <span className="text-xs sm:text-sm md:text-base text-inherit">
-              Previous
-            </span>
+            <span className="text-sm text-inherit">Previous</span>
           </button>
         )}
         <button
-          className={`bg-black px-5 py-3 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300 ${
+          className={`bg-black px-4 py-2 rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300 ${
             !selectedOption ? "opacity-50 cursor-not-allowed" : "opacity-100"
           }`}
           onClick={
@@ -198,12 +192,12 @@ const Question = ({
           }
           disabled={!selectedOption}
         >
-          <span className="text-xs sm:text-sm md:text-base text-inherit">
+          <span className="text-sm text-inherit">
             {index === data.length - 1 ? "Submit" : "Next"}
           </span>
         </button>
       </div>
-    </div>
+    </>
   );
 };
 
