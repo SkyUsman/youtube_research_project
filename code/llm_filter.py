@@ -84,8 +84,13 @@ class FilterComments:
             # If the comment is valid, write to the csv.
             if is_valid:
                 # Grab the row and write to it.                
-                row = batch_ids[i]
-                writer.writerow(row)
+                comment_text = batch_comments[i]
+
+                # Check if pronouns have context
+                if self.classifier.has_clear_pronoun_context(comment_text):
+                    row = batch_ids[i]
+                    writer.writerow(row)
+
 
 class ClassifyComments:
     '''
@@ -166,6 +171,30 @@ class ClassifyComments:
             return results
         except Exception as e:
             print(f"Error in LLM classification: {e}")
+
+    def has_clear_pronoun_context(self, comment: str) -> bool:
+        '''
+        Uses Gemini to determine if all pronouns have clear antecedents.
+        '''
+        prompt = f"""
+        You're an assistant that checks for pronoun clarity in short comments.
+
+        Task: Determine if **all pronouns** in the following comment refer to **explicitly named people, places, or nouns mentioned in the same comment**.
+
+        Only return **Yes** or **No** — no explanations.
+
+        Comment: "{comment}"
+
+        Does every pronoun (e.g., he, she, they, it, his, her, their) clearly refer to a noun already mentioned in the comment?
+        """
+        try:
+            response = self.model.generate_content(prompt)
+            result = response.text.strip().lower()
+            return result == "yes"
+        except Exception as e:
+            print(f"Error in pronoun check: {e}")
+            return False
+
 
 class ProcessComments:
     '''

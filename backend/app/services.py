@@ -40,12 +40,16 @@ def get_filtered_comments():
 def get_random_filtered_comments():
   try:
     # Query the database.
-    comments = FilteredComments.query.order_by(db.func.newid()).limit(10).all()
+    comments = FilteredComments.query.order_by(FilteredComments.view_count.asc(), db.func.newid()).limit(10).all()
     
     # Ensure comments are populated, else 404.
     if not comments:
       return {"error": "No comments found in FilteredYTComments"}, 404
     
+    # Increment view_count for each comment returned
+    for comment in comments:
+      comment.view_count += 1
+    db.session.commit()
     # If we make it this far, 200 OK (return comments).
     return comments, 200
   except Exception as e:

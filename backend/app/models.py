@@ -27,3 +27,4 @@ class FilteredComments(db.Model):
   survey_yes = db.Column(db.Integer, nullable=True)
   survey_no = db.Column(db.Integer, nullable=True)
   survey_skip = db.Column(db.Integer, nullable=True)
+  view_count = db.Column(db.Integer, nullable=False, default=0)
