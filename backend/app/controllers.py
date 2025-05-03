@@ -40,15 +40,26 @@ def filtered_comments() -> Response:
 
 @blueprint.route('/comments/filtered/random', methods=['GET'])
 def random_filtered_comments() -> Response:
-  # Fetch the comments.
-  result = get_random_filtered_comments()
+    try:
+        # First attempt
+        result = get_random_filtered_comments()
 
-  # If an error occurs, return the json of the msg and the code.
-  if isinstance(result, tuple) and result[1] in (404, 500):
-    return jsonify(result[0]), result[1]
-  
-  # Otherwise, format the comments.
-  return jsonify(format_comments(result[0])), result[1]
+        if isinstance(result, tuple) and result[1] in (500,):
+            print("Initial fetch failed. Retrying...")
+
+            # Retry once after failure (DB likely waking up)
+            result = get_random_filtered_comments()
+
+        # Return error if still failed
+        if isinstance(result, tuple) and result[1] in (404, 500):
+            return jsonify(result[0]), result[1]
+
+        # All good
+        return jsonify(format_comments(result[0])), result[1]
+
+    except Exception as e:
+        print(f"Unexpected error in comments route: {e}")
+        return jsonify({"error": "Server error occurred"}), 500
 
 # POST Methods.
 
